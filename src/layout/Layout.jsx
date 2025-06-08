@@ -7,14 +7,14 @@ import Footer from './Footer';
 
 export default function Layout() {
   return (
-    <main className=" flex-col w-screen min-h-screen h-screen flex items-center justify-start  bg-natural-100 dark:bg-black/95 px-2 md:px-5 ">
+    <main className="flex flex-col items-center justify-start w-screen h-[100dvh] bg-natural-100 dark:bg-black/95 px-2 md:px-5">
     <Header />
-    <div className="min-h-screen h-full flex flex-col items-center justify-start w-full max-w-[1800px]  gap-3 p-2 mb-[300px] px-0">
-
-      <Outlet/>
-
+  
+    <div className="content w-full max-w-[1900px] max-h-[100dvh] h-full flex  flex-col items-center justify-start gap-3 p-2 px-0 overflow-hidden rounded-2xl ">
+      <Outlet />
     </div>
-    <Footer />
+  
+    {/* <Footer /> */}
   </main>
   )
 }

@@ -1,6 +1,7 @@
 import { useGridContext } from '@/context/GridContext';
 import React, { useRef } from 'react';
 import GridItem from './GridItem';
+import { cn } from '@/lib/utils';
 
 export default function GridLayout({children}) {
   const containerRef = useRef(null);
@@ -21,14 +22,21 @@ export default function GridLayout({children}) {
     // Set new item here
   };
 
-  const { gridItems } = useGridContext();
+  const { gridItems , pannelItems } = useGridContext();
 
+  const pannelOpenedCount = pannelItems.filter((item) => item.isOpen === true).length;
+  const mainLayoutSize = {
+    0 : 'col-span-12',
+    1 : 'col-span-10',
+    2 : 'col-span-8',
+    3 : 'col-span-6',
+  }
 
   return (
     <div
       ref={containerRef}
       onClick={handleClick}
-      className="relative w-full h-full dark:bg-neutral-900 grid grid-cols-24 grid-rows-24 rounded-md gap-1"
+      className={cn(  "relative w-full h-full  dark:bg-neutral-900 grid grid-cols-24 grid-rows-24 rounded-md gap-1 transition-all duration-75 ", mainLayoutSize[pannelOpenedCount])}
       style={{
         backgroundImage: `
           linear-gradient(to right, rgba(100,100,100,0.2) 1px, transparent 1px),

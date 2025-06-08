@@ -45,6 +45,7 @@ function ChartContainer({
         <RechartsPrimitive.ResponsiveContainer>
           {children}
         </RechartsPrimitive.ResponsiveContainer>
+        
       </div>
     </ChartContext.Provider>)
   );

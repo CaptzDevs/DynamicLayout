@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useGridContext } from '@/context/GridContext';
+import { Ellipsis, X } from 'lucide-react';
 
 
 export default function GridItem({ children, className, gridItem }) {
@@ -132,10 +133,14 @@ export default function GridItem({ children, className, gridItem }) {
 
   return (
     <div
-      onMouseDown={(e) => onMouseDown(e, 'move')}
+      onMouseDown={(e) => {
+        // Prevent triggering 'move' if clicking on interactive child (like Brush)
+        if (e.target.closest('.recharts-brush')) return;
+        onMouseDown(e, 'move');
+      }}
       ref={ref}
       className={cn(
-        'relative w-full h-full flex items-center justify-center dark:bg-neutral-900 bg-white rounded-xl group transition-all overflow-hidden p-3' ,
+        'relative w-full h-full flex flex-col items-center justify-center gap-2 dark:bg-neutral-900 bg-white rounded-xl group transition-all overflow-hidden p-3' ,
         className
       )}
       style={gridProp}
@@ -143,6 +148,14 @@ export default function GridItem({ children, className, gridItem }) {
     {/*   <div className="absolute top-1 left-1 text-xs text-white bg-black/30 px-1 rounded z-10 pointer-events-none ">
         {gridSize.row} × {gridSize.col} | row : {gridPosition.row} ,  col : {gridPosition.col}
       </div> */}
+
+      <div className='w-full flex items-center justify-between  border-b border-neutral-700 pb-2 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-75'> 
+        <div>Chart </div>
+        <div className='flex items-center gap-2 '> 
+          <div className="opacity-50 hover:opacity-100 cursor-pointer"> <Ellipsis/> </div>  
+          <div className="opacity-50 hover:opacity-100 cursor-pointer"> <X/> </div>  
+        </div>
+      </div>
 
       {gridItem.element}
 
@@ -159,9 +172,9 @@ export default function GridItem({ children, className, gridItem }) {
 const GridResizeHandler = ({ place, onMouseDown }) => {
   const position = {
     move: 'absolute top-0 right-0 w-4 h-4 cursor-move bg-white/30 hover:bg-white/60 z-10',
-    col: 'absolute right-0 top-0 h-full w-1 cursor-ew-resize transition-all duration-75 group-hover:bg-neutral-400/40',
-    row: 'absolute bottom-0 left-0 w-full h-1 cursor-ns-resize transition-all duration-75 group-hover:bg-neutral-400/40',
-    both: 'absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize transition-all duration-75 group-hover:bg-neutral-400 opacity-50 hover:opacity-100',
+    col: 'absolute right-0 top-0 h-full w-1 cursor-ew-resize transition-all duration-75 ',
+    row: 'absolute bottom-0 left-0 w-full h-1 cursor-ns-resize transition-all duration-75 ',
+    both: 'absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize transition-all duration-75 ',
   };
 
   return (

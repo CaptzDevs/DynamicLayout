@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import LineChart from "../chart/LineChart"
 
+
 export function ChartWidget() {
 
 
@@ -45,7 +46,7 @@ export function ChartWidget() {
         </div> */}
       </CardHeader>
       <CardContent className="px-2 sm:p-6 h-full">
-         <LineChart />
+         {/* <LineChart chartData={chartData} /> */}
       </CardContent>
     </Card>
   )
