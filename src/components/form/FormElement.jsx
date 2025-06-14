@@ -1,4 +1,4 @@
-import React, { useId , useCallback, useState  } from 'react'
+import React, { useId , useCallback, useState, useEffect  } from 'react'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { SelectNative } from '../ui/select-native'
@@ -13,6 +13,8 @@ import {
     SelectLabel,
   } from "@/components/ui/select"
 import { Button } from '../ui/button'
+import { useGridContext } from '@/context/GridContext'
+import { ColorPicker } from 'antd'
 
 export const InputForm = ({item}) => {
     const id = useId()
@@ -26,6 +28,7 @@ export const InputForm = ({item}) => {
             placeholder={item.type}
             type="text"
           /> */}
+
           <InputDropZone item={item}/>
           
            {item.units &&
@@ -56,6 +59,71 @@ export const InputForm = ({item}) => {
 }
 
 
+export const InputColor = ({value,item , col}) =>{
+  const [color, setColor] = useState(value || '#FFFFFF');
+  const {dataSet , setDataSet , selectedItems , setSelectedItems , getGridItemPropsValue , setGridItems , updateGridItem} = useGridContext();
+  console.log(item, col,'dad')
+  function rgbToHex(color) {
+    if (!color || typeof color !== 'object') return '#000000'; // fallback
+  
+    const toHex = (c) => c.toString(16).padStart(2, '0');
+    const { r, g, b } = color;
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+  
+  useEffect(()=>{
+  
+    console.log(selectedItems.dataProps.props,item,'dsda11')
+
+    const updateColor = selectedItems.dataProps.props.map((selectProp) => {
+      if (selectProp.name === item.name && Array.isArray(selectProp?.value)) {
+        const updatedValue = selectProp.value.map((propVal) => {
+          if (propVal.colKey === col.colKey) {
+            return {
+              ...propVal,
+              color: rgbToHex(color?.metaColor), // <-- convert color here
+            };
+          }
+          return propVal;
+        });
+    
+        return {
+          ...selectProp,
+          value: updatedValue,
+        };
+      }
+    
+      return selectProp; // fallback for others
+    });
+    
+
+    const updateProps = {
+      ...selectedItems,
+      dataProps: {
+        ...selectedItems.dataProps,
+        props: updateColor,
+      },
+    };
+  
+    setSelectedItems(updateProps);
+    updateGridItem(selectedItems.id, updateProps);
+  
+  },[color])
+
+  
+
+  return <div className=' rounded-sm flex items-center justify-center p-0'>
+   <ColorPicker
+      className='hover:!bg-neutral-700 flex items-center justify-center'
+      onChange={(v) => {
+        setColor(v);
+      }}
+      value={color}
+    />
+</div>
+
+
+}
 
 
 export const InputDropZone = ({
@@ -65,6 +133,7 @@ export const InputDropZone = ({
 }) => {
   const [draggedItems, setDraggedItems] = useState([]);
   const [draggingIndex, setDraggingIndex] = useState(null);
+  const { gridItems, selectedItems , setSelectedItems  , updateGridItem} = useGridContext();
 
   const handleDropCol = useCallback((colData) => {
     const exists = draggedItems.some(
@@ -72,14 +141,46 @@ export const InputDropZone = ({
     );
     if (exists) return;
 
+
     if (!allowMultiple || maxItems <= 1) {
       setDraggedItems([colData]); // only one allowed
     } else if (draggedItems.length < maxItems) {
       setDraggedItems((prev) => [...prev, colData]); // add if under limit
     }
     // else: ignore drop silently
+    console.log(gridItems,'gridI3121tems')
   }, [draggedItems, allowMultiple, maxItems]);
 
+// EFFECT: triggers even when array becomes empty
+useEffect(() => {
+  // You can remove this guard if you want to update even when empty
+  // if (draggedItems.length === 0) return;
+
+  const updateItemProp = selectedItems.dataProps.props.map((selectProp) => {
+    if (selectProp.name === item.name) {
+      return {
+        ...selectProp,
+        value: [...draggedItems], // force clone
+      };
+    }
+    return selectProp;
+  });
+
+  const updateProps = {
+    ...selectedItems,
+    dataProps: {
+      ...selectedItems.dataProps,
+      props: updateItemProp,
+    },
+  };
+
+  console.log(selectedItems.dataProps.props , updateItemProp,'pppdasdas')
+  setSelectedItems(updateProps);
+  updateGridItem(selectedItems.id, updateProps);
+}, [JSON.stringify(draggedItems)]); // 👈 force effect to run on deep change
+
+  
+  
   const handleExternalDrop = useCallback((e) => {
     e.preventDefault();
     const dropped = e.dataTransfer.getData('application/json');
@@ -103,9 +204,17 @@ export const InputDropZone = ({
     setDraggingIndex(null);
   };
 
-  const removeItem = (index) => {
-    setDraggedItems((prev) => prev.filter((_, i) => i !== index));
-  };
+// REMOVE function: ensures a new reference
+const removeItem = (index) => {
+  setDraggedItems((prev) => {
+    const updated = prev.filter((_, i) => i !== index);
+    return [...updated]; // always new reference
+  });
+  console.log('Item removed at index', index);
+};
+
+  
+  
 
   return (
     <div
@@ -131,6 +240,8 @@ export const InputDropZone = ({
             }}
             onDrop={() => allowMultiple && handleInternalDrop(index)}
           >
+          <InputColor  item={item} col={col}/>
+
             <span>{col.colKey}</span>
             <Button
               className="text-red-400 ml-1 text-[10px] hover:text-red-600 !bg-transparent"

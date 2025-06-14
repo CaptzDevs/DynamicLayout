@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useGridContext } from '@/context/GridContext';
 import { Ellipsis, X } from 'lucide-react';
+import { WidgetProvider } from '@/context/WidgetContext';
 
 
 export default function GridItem({ children, className, gridItem }) {
@@ -25,6 +26,8 @@ export default function GridItem({ children, className, gridItem }) {
   const startPosition = useRef({ row: gridPosition.row, col: gridPosition.col });
 
   const _MAX_SIZE = 24;
+
+  const Widget = gridItem?.element;
 
   const checkCollision = (newRow, newCol, rowSpan, colSpan) => {
     return gridItems.some((item) => {
@@ -158,7 +161,9 @@ export default function GridItem({ children, className, gridItem }) {
         </div>
       </div>
 
-      {gridItem.element}
+      <WidgetProvider widgetData={gridItem}>
+        <Widget />
+      </WidgetProvider>
 
 
     

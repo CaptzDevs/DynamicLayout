@@ -108,6 +108,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.ant-color-picker-trigger{
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.ant-popover-open.ant-color-picker-trigger-active{
+  outline: none !important;
+  box-shadow: none;
+}
+.ant-popover-inner{
+  background: var(--color-neutral-800) !important;
+}
+.ant-popover-inner .ant-select-selection-item{
+  color : white !important;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ALargeSmall, Brush, ChartColumn, Check, Hash, Proportions, Table, ToggleLeft } from 'lucide-react'
+import { ALargeSmall, Brush, Calendar, ChartColumn, Check, Hash, Proportions, Table, ToggleLeft } from 'lucide-react'
 import { Button } from '../ui/button'
 import {
     Tabs,
@@ -18,6 +18,8 @@ import {
 import { Checkbox } from '../ui/checkbox'
 import { Label } from '../ui/label'
 import { cn } from '@/lib/utils'
+import { ColorPicker } from '../ui/color-picker'
+import { InputColor } from '../form/FormElement'
 
 export function GridControlContainer(  ) {
     const { pannelItems } = useGridContext()
@@ -71,21 +73,21 @@ function TabsControl({tabItems}) {
   }
   
 export const TabDataPage = () => {
-    const { dataSet , setDataSet } = useGridContext();
-    console.log(dataSet, 'dataSet');
+    const {  dataCols ,  setDataCols } = useGridContext();
 
     const onClickCol = (dataSetIndex, dataKey , colKey) => {
-        dataSet[dataSetIndex].cols.forEach((col) => {
+        dataCols[dataSetIndex].cols.forEach((col) => {
             if(Object.keys(col)[0] === colKey){
                 col.selected = !col.selected;
             }
         })
-        setDataSet([...dataSet])
+        setDataCols([...dataCols])
     }
 
     const countSelectedData = (dataSetIndex) =>{
         let selectedCols = 0
-        dataSet[dataSetIndex].cols.forEach((col) => {
+        console.log(dataCols,'ddasda')
+        dataCols[dataSetIndex].cols.forEach((col) => {
             if(col.selected){
                 selectedCols += 1
             }
@@ -97,6 +99,7 @@ export const TabDataPage = () => {
         String: <div className='text-[14px]'>Aa</div>,
         Number: <Hash size={14} aria-hidden="true" />,
         Boolean: <ToggleLeft size={14} aria-hidden="true" />,
+        Date: <Calendar size={14} aria-hidden="true" />,
       };
   
     return (
@@ -104,7 +107,7 @@ export const TabDataPage = () => {
       type="multiple"
       collapsible
       >
-        {dataSet.map((item, dataSetIndex) => (
+        {dataCols.map((item, dataSetIndex) => (
           <AccordionItem value={'acc-'+item.dataName} className=' w-full rounded-sm p-2' key={'acc'+dataSetIndex}>
             <AccordionTrigger className='font-bold pb-2 flex items-center  cursor-pointer hover:bg-neutral-800 p-2 rounded-sm'>
                  <div className='flex  items-center gap-2'>
@@ -142,7 +145,7 @@ export const TabDataPage = () => {
                         </div>
 
 
-                        {col.selected && <Check size={12}/>}
+                        {/* {col.selected && <Check size={12}/>} */}
                     </div>
                 );
               })}

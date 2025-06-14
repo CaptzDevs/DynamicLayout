@@ -18,7 +18,8 @@ const barChart = {
       { name: 'syncId', default: undefined, type: 'any' },
     ],
     props : [
-      {name : 'value' , drop : true , acceptType : ['number','string','array']}, 
+      {name : 'x' , drop : true , acceptType : ['number','string','array']}, 
+      {name : 'y' , drop : true , acceptType : ['number','string','array']}, 
       {name : 'legend'},
       {name : 'detail'},
     ]
