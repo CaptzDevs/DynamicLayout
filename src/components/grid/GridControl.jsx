@@ -122,6 +122,18 @@ export const TabDataPage = () => {
                         col.selected && 'bg-neutral-800'
                      )}
                     key={j}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData(
+                        'application/json',
+                        JSON.stringify({
+                          dataSetIndex,
+                          dataKey: item.dataKey,
+                          colKey: key,
+                          colValue: value,
+                        })
+                      );
+                    }}
                     onClick={()=>onClickCol( dataSetIndex, item.dataKey,key)}
                     >
                         <div className='flex items-center gap-2 '>

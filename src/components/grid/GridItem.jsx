@@ -5,7 +5,7 @@ import { Ellipsis, X } from 'lucide-react';
 
 
 export default function GridItem({ children, className, gridItem }) {
-  const {  setIsResizing, gridItems, setGridItems } = useGridContext();
+  const {  setIsResizing, gridItems, setGridItems , setSelectedItems } = useGridContext();
   const id = gridItem?.id;
 
   const [gridSize, setGridSize] = useState({
@@ -44,6 +44,7 @@ export default function GridItem({ children, className, gridItem }) {
     startPos.current = { x: e.clientX, y: e.clientY };
     startSize.current = { ...gridSize };
     startPosition.current = { ...gridPosition };
+    setSelectedItems(gridItem);
     setIsResizing(true);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);

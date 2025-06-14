@@ -4,6 +4,7 @@ import GridItem from './GridItem';
 import { cn } from '@/lib/utils';
 
 export default function GridLayout({children}) {
+  const { gridItems , pannelItems } = useGridContext();
   const containerRef = useRef(null);
 
   const handleClick = (e) => {
@@ -22,7 +23,6 @@ export default function GridLayout({children}) {
     // Set new item here
   };
 
-  const { gridItems , pannelItems } = useGridContext();
 
   const pannelOpenedCount = pannelItems.filter((item) => item.isOpen === true).length;
   const mainLayoutSize = {

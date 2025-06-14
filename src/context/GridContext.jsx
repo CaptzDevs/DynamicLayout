@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { ALargeSmall, Brush, ChartColumn, Check, Hash, Proportions, Table, ToggleLeft } from 'lucide-react'
+import { ALargeSmall, Brush, ChartColumn, Check, Hash, Proportions, Table, ToggleLeft, Wrench } from 'lucide-react'
 import { TabDataPage } from '@/components/grid/GridControl';
 import { ChartWidget } from '@/components/widget/ChartWidget';
-import TabChart from '@/components/tab/tabChart';
+import chartProps from '@/components/chart/ChartProps';
+import { TabChart, TabConfig } from '@/components/tab/TabChart';
 
 const GridContext = createContext();
 
@@ -259,9 +260,6 @@ const _Pannel = [
                 icon : <Table size={16} aria-hidden="true" />,
                 content : <TabDataPage/>,
             },
-       
-        
-           
         ],
         isOpen : true,
     },
@@ -269,11 +267,18 @@ const _Pannel = [
         id : 2 ,
         name : "Chart",
         tabs : [
-            {
-                nameKey : 'chart',
-                title : 'Chart',
+              {
+                nameKey : 'data',
+                title : 'Data',
                 icon : <ChartColumn size={16} aria-hidden="true" />,
                 content : <TabChart/>,
+
+            },
+            {
+                nameKey : 'config',
+                title : 'Config',
+                icon : <Wrench size={16} aria-hidden="true" />,
+                content : <TabConfig/>,
     
             },
             {
@@ -289,16 +294,18 @@ const _Pannel = [
 
 
 
-const gridItemsData = [
-    /* { id: 1, row: 3, col: 3, rowSpan: 6, colSpan: 4 , element : <CardWidget/>}, */
-    { id: 2, row: 4, col: 4, rowSpan: 16, colSpan: 18  ,element : <ChartWidget/>},
-  ]
+
 
 export const GridProvider = ({ children  }) => {
+  const gridItemsData = [
+    /* { id: 1, row: 3, col: 3, rowSpan: 6, colSpan: 4 , element : <CardWidget/>}, */
+    { id: 2, row: 4, col: 4, rowSpan: 16, colSpan: 18  ,element : <ChartWidget/> , dataProps : chartProps.barChart },
+  ]
+
   const [isResizing, setIsResizing] = useState(false);
   const [gridItems, setGridItems] = useState(gridItemsData);
-  const [isOpenSubMenu, setIsOpenSubMenu] = useState([]);
   const [pannelItems, setPannelItems] = useState(_Pannel)
+  const [selectedItems, setSelectedItems] = useState([])
 
   const [dataSet , setDataSet] = useState([])
 
@@ -338,6 +345,8 @@ export const GridProvider = ({ children  }) => {
     const newDataSet = [...getColumns()]
     setDataSet(newDataSet)
   },[])
+
+
   
   useEffect(()=>{
     console.log('gridItems', gridItems)
@@ -354,7 +363,8 @@ export const GridProvider = ({ children  }) => {
              setDataSet,
              pannelItems,
              setPannelItems,
-             
+             selectedItems,
+             setSelectedItems
         }}>
       {children}
     </GridContext.Provider>
