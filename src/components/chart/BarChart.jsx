@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis , YAxis , Brush } from "recharts"
 import {
   ChartContainer,
@@ -31,7 +31,7 @@ const chartStyle = {
 }
 
 const chartProps = {
-    stack : false,
+    stack : true,
 }
 
 export default function BarChartItem({  /* chartProps , chartStyle  */}) {
@@ -52,19 +52,18 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
   const xData = getPropData('x');
   const yData = getPropData('y');
 
-
   //console.log(getPropData('x'),'dasdad')
 
-  const getDataSource = () => {
+  const dataSourceKey = useMemo(() => {
     const flattenedKeys = (widgetData?.dataProps?.props ?? []).flatMap(item =>
       item?.value?.map(valueItem => valueItem.dataKey) ?? []
     );
-    
+  
     const frequencyMap = {};
     flattenedKeys.forEach(key => {
       frequencyMap[key] = (frequencyMap[key] || 0) + 1;
     });
-    
+  
     let maxKey = null;
     let maxCount = 0;
     for (const [key, count] of Object.entries(frequencyMap)) {
@@ -73,18 +72,18 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
         maxCount = count;
       }
     }
-    return maxKey
-  }    
-    const dataSourceKey = getDataSource()
+    return maxKey;
+  }, [widgetData]);
+  
 
-   useEffect(()=>{
-    dataSet.map((item) => {
-      if(item?.dataKey === dataSourceKey){
-        setChartData(item.data)
+    useEffect(() => {
+      const source = dataSet.find((item) => item?.dataKey === dataSourceKey);
+      if (source) {
+        setChartData(source.data);
       }
-    })
-
-   },[widgetData])
+    }, [dataSet, dataSourceKey]);
+    
+    
   
   /*   const dataCols = [...new Set(chartData.flatMap(obj => Object.keys(obj)))].slice(1);
 
@@ -108,6 +107,15 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
       );
     }
 
+    if (chartData.length === 0) {
+      return (
+        <div className='h-full w-full flex items-center justify-center text-sm text-muted'>
+          No chart data available
+        </div>
+      );
+    }
+    
+
   return (
     <ChartContainer
     config={chartConfig}
@@ -127,6 +135,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
       {xData?.map((item) => (
         <XAxis
+        key={item.colKey}
         dataKey={item.colKey}
         tickLine={false}
         axisLine={false}
