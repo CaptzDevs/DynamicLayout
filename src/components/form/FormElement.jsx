@@ -60,11 +60,22 @@ export const InputForm = ({item}) => {
 
 
 export const InputColor = ({value,item , col}) =>{
-  const [color, setColor] = useState(value || '#FFFFFF');
-  const {dataSet , setDataSet , selectedItems , setSelectedItems , getGridItemPropsValue , setGridItems , updateGridItem} = useGridContext();
+  const getRandomBrightColor = () => {
+    const r = Math.floor(128 + Math.random() * 128);
+    const g = Math.floor(128 + Math.random() * 128);
+    const b = Math.floor(128 + Math.random() * 128);
+  
+    const toHex = (value) => value.toString(16).padStart(2, '0');
+  
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  };
+  
+  const colorR = getRandomBrightColor()
+  const [color, setColor] = useState(value ||colorR);
+  const {dataSet , setDataSet , selectedItems , setSelectedItems , updateBlockItem} = useGridContext();
   console.log(item, col,'dad')
   function rgbToHex(color) {
-    if (!color || typeof color !== 'object') return '#000000'; // fallback
+    if (!color || typeof color !== 'object') return col?.color || colorR; // fallback
   
     const toHex = (c) => c.toString(16).padStart(2, '0');
     const { r, g, b } = color;
@@ -106,11 +117,9 @@ export const InputColor = ({value,item , col}) =>{
     };
   
     setSelectedItems(updateProps);
-    updateGridItem(selectedItems.id, updateProps);
+    updateBlockItem(selectedItems.id, updateProps);
   
   },[color])
-
-  
 
   return <div className=' rounded-sm flex items-center justify-center p-0'>
    <ColorPicker
@@ -129,92 +138,93 @@ export const InputColor = ({value,item , col}) =>{
 export const InputDropZone = ({
   item,
   allowMultiple = true,
-  maxItems = Infinity // default = no limit
+  maxItems = Infinity, // default = no limit
 }) => {
-  const [draggedItems, setDraggedItems] = useState([]);
+  const {
+    blockItems,
+    setBlockItems,
+    selectedItems,
+    setSelectedItems,
+    updateBlockItem,
+    getBlockPropsValue,
+  } = useGridContext();
+
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const { gridItems, selectedItems , setSelectedItems  , updateGridItem} = useGridContext();
 
-  const handleDropCol = useCallback((colData) => {
-    const exists = draggedItems.some(
-      (d) => d.colKey === colData.colKey && d.dataSetIndex === colData.dataSetIndex
-    );
-    if (exists) return;
+  const currentValues = getBlockPropsValue(selectedItems, item.name) || [];
 
+  const updateSelectedItemProps = (propName, newValue) => {
+    setSelectedItems((prev) => {
+      if (!prev?.dataProps?.props) return prev;
 
-    if (!allowMultiple || maxItems <= 1) {
-      setDraggedItems([colData]); // only one allowed
-    } else if (draggedItems.length < maxItems) {
-      setDraggedItems((prev) => [...prev, colData]); // add if under limit
-    }
-    // else: ignore drop silently
-    console.log(gridItems,'gridI3121tems')
-  }, [draggedItems, allowMultiple, maxItems]);
+      const updatedProps = prev.dataProps.props.map((prop) =>
+        prop.name === propName
+          ? { ...prop, value: newValue }
+          : prop
+      );
 
-// EFFECT: triggers even when array becomes empty
-useEffect(() => {
-  // You can remove this guard if you want to update even when empty
-  // if (draggedItems.length === 0) return;
-
-  const updateItemProp = selectedItems.dataProps.props.map((selectProp) => {
-    if (selectProp.name === item.name) {
-      return {
-        ...selectProp,
-        value: [...draggedItems], // force clone
+      const updated = {
+        ...prev,
+        dataProps: {
+          ...prev.dataProps,
+          props: updatedProps,
+        },
       };
-    }
-    return selectProp;
-  });
 
-  const updateProps = {
-    ...selectedItems,
-    dataProps: {
-      ...selectedItems.dataProps,
-      props: updateItemProp,
+      updateBlockItem(prev.id, updated);
+      return updated;
+    });
+  };
+
+  const handleDropCol = useCallback(
+    (colData) => {
+      const exists = currentValues.some(
+        (d) =>
+          d.colKey === colData.colKey && d.dataSetIndex === colData.dataSetIndex
+      );
+      if (exists) return;
+
+      const updated =
+        allowMultiple && currentValues.length < maxItems
+          ? [...currentValues, colData]
+          : [colData];
+
+      updateSelectedItemProps(item.name, updated); // ✅ fixed
     },
-  };
+    [currentValues, allowMultiple, maxItems]
+  );
 
-  console.log(selectedItems.dataProps.props , updateItemProp,'pppdasdas')
-  setSelectedItems(updateProps);
-  updateGridItem(selectedItems.id, updateProps);
-}, [JSON.stringify(draggedItems)]); // 👈 force effect to run on deep change
+  const handleExternalDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      const dropped = e.dataTransfer.getData("application/json");
+      if (dropped) {
+        const colData = JSON.parse(dropped);
+        handleDropCol(colData);
+      }
+    },
+    [handleDropCol]
+  );
 
-  
-  
-  const handleExternalDrop = useCallback((e) => {
-    e.preventDefault();
-    const dropped = e.dataTransfer.getData('application/json');
-    if (dropped) {
-      const colData = JSON.parse(dropped);
-      handleDropCol(colData);
-    }
-  }, [handleDropCol]);
+  const handleDragOver = (e) => e.preventDefault();
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  const handleInternalDrop = (toIndex) => {
+    if (draggingIndex === null || draggingIndex === toIndex) return;
 
-  const handleInternalDrop = (index) => {
-    if (draggingIndex === null || draggingIndex === index) return;
-
-    const reordered = [...draggedItems];
+    const reordered = [...currentValues];
     const [moved] = reordered.splice(draggingIndex, 1);
-    reordered.splice(index, 0, moved);
-    setDraggedItems(reordered);
+    reordered.splice(toIndex, 0, moved);
+
+    updateSelectedItemProps(item.name, reordered); // ✅ fixed
+
+    console.log(reordered,'reordered')
     setDraggingIndex(null);
   };
 
-// REMOVE function: ensures a new reference
-const removeItem = (index) => {
-  setDraggedItems((prev) => {
-    const updated = prev.filter((_, i) => i !== index);
-    return [...updated]; // always new reference
-  });
-  console.log('Item removed at index', index);
-};
-
-  
-  
+  const removeItem = (index) => {
+    const updated = currentValues.filter((_, i) => i !== index);
+    updateSelectedItemProps(item.name, updated); // ✅ fixed
+  };
 
   return (
     <div
@@ -222,26 +232,20 @@ const removeItem = (index) => {
       onDrop={handleExternalDrop}
       onDragOver={handleDragOver}
     >
-      {draggedItems.length > 0 ? (
-        draggedItems.map((col, index) => (
+      {currentValues.length > 0 ? (
+        currentValues.map((col, index) => (
           <div
             key={`${col.dataSetIndex}-${col.colKey}-${index}`}
-            className="bg-neutral-700 w-full border rounded-sm pl-2  text-xs text-white flex items-center justify-between gap-2 cursor-move"
+            className="bg-neutral-700 w-full border rounded-sm pl-2 text-xs text-white flex items-center justify-between gap-2 cursor-move"
             draggable
             onDragStart={(e) => {
-              e.dataTransfer.setData(
-                'application/json',
-                JSON.stringify(col)
-              );
-              if (allowMultiple) setDraggingIndex(index);
+              e.dataTransfer.setData("application/json", JSON.stringify(col));
+              setDraggingIndex(index);
             }}
-            onDragOver={(e) => {
-              if (allowMultiple) e.preventDefault();
-            }}
-            onDrop={() => allowMultiple && handleInternalDrop(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => handleInternalDrop(index)}
           >
-          <InputColor  item={item} col={col}/>
-
+            <InputColor item={item} col={col} value={col.color}/>
             <span>{col.colKey}</span>
             <Button
               className="text-red-400 ml-1 text-[10px] hover:text-red-600 !bg-transparent"
@@ -257,3 +261,4 @@ const removeItem = (index) => {
     </div>
   );
 };
+

@@ -201,21 +201,22 @@ const _Pannel = [
 
 
 
+const blockItemData = [
+  /* { id: 1, row: 3, col: 3, rowSpan: 6, colSpan: 4 , element : <CardWidget/>}, */
+  { id: 2, row: 4, col: 4, rowSpan: 16, colSpan: 18  ,element : ChartWidget , dataProps : chartProps.barChart },
+]
 
 export const GridProvider = ({ children  }) => {
-  const gridItemsData = [
-    /* { id: 1, row: 3, col: 3, rowSpan: 6, colSpan: 4 , element : <CardWidget/>}, */
-    { id: 2, row: 4, col: 4, rowSpan: 16, colSpan: 18  ,element : ChartWidget , dataProps : chartProps.barChart },
-  ]
+
 
   const [isResizing, setIsResizing] = useState(false);
-  const [gridItems, setGridItems] = useState(gridItemsData);
+  const [blockItems, setBlockItems ] = useState(blockItemData);
   const [pannelItems, setPannelItems] = useState(_Pannel)
   const [selectedItems, setSelectedItems] = useState([])
 
   const [dataSet , setDataSet] = useState(_DATA_SET)
   const [dataCols , setDataCols] = useState([])
- 
+
 
   const getColumns = () =>{
 
@@ -261,18 +262,22 @@ export const GridProvider = ({ children  }) => {
 
   
   useEffect(()=>{
-    console.log('gridItems', gridItems)
-  },[gridItems])
+    console.log('blockItems', blockItems)
+  },[blockItems])
 
-  const updateGridItem = (id, updatedItem) => {
+  useEffect(()=>{
+    console.log('selectedItems1',selectedItems)
+
+  },[selectedItems])
+
+  const updateBlockItem = (id, updatedItem) => {
     console.log(id,'didas')
-    setGridItems((prevItems) => prevItems.map((item) => (item.id === id ? updatedItem : item)));
-    
+    setBlockItems((prevItems) => prevItems.map((item) => (item.id === id ? updatedItem : item)));
   };
 
-  const getGridItemPropsValue = (gridItem ,  propName) => {
-    const prop = gridItem?.find(prop => prop.name === propName);
-    console.log(prop,propName,'dasdashfdjkifjd')
+  const getBlockPropsValue = (gridItem ,  propName) => {
+    console.log(gridItem , propName,'dasdashfdjkifjd1')
+    const prop = gridItem?.dataProps?.props?.find(prop => prop.name === propName);
     return prop?.value // return first item if exists
   };
 
@@ -284,16 +289,16 @@ export const GridProvider = ({ children  }) => {
             setDataSet,
             isResizing,
              setIsResizing ,
-             gridItems,
-             setGridItems,
+            blockItems,
+            setBlockItems ,
             
              pannelItems,
              setPannelItems,
              selectedItems,
              setSelectedItems,
 
-             updateGridItem,
-             getGridItemPropsValue,
+            updateBlockItem,
+              getBlockPropsValue,
         }}>
       {children}
     </GridContext.Provider>

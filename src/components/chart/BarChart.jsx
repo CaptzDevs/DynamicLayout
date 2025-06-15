@@ -42,7 +42,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
    
   const propsData = widgetData?.dataProps?.props
-
+  console.log('propsData',propsData)
   const getPropData = (propName) => {
     const prop = propsData.find(prop => prop.name === propName);
     return prop?.value // return first item if exists
@@ -79,7 +79,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
    useEffect(()=>{
     dataSet.map((item) => {
-      if(item.dataKey === dataSourceKey){
+      if(item?.dataKey === dataSourceKey){
         setChartData(item.data)
       }
     })

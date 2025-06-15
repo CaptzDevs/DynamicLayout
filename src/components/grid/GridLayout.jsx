@@ -4,7 +4,7 @@ import GridItem from './GridItem';
 import { cn } from '@/lib/utils';
 
 export default function GridLayout({children}) {
-  const { gridItems , pannelItems } = useGridContext();
+  const { blockItems , pannelItems } = useGridContext();
   const containerRef = useRef(null);
 
   const handleClick = (e) => {
@@ -46,7 +46,7 @@ export default function GridLayout({children}) {
       }}
     >
 
-      {gridItems?.map((item,i)=> <GridItem gridItem={item} key={i}/>)}
+      {blockItems?.map((item,i)=> <GridItem gridItem={item} key={i}/>)}
       
     </div>
   );

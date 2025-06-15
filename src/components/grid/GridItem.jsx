@@ -6,7 +6,7 @@ import { WidgetProvider } from '@/context/WidgetContext';
 
 
 export default function GridItem({ children, className, gridItem }) {
-  const {  setIsResizing, gridItems, setGridItems , setSelectedItems } = useGridContext();
+  const {  setIsResizing, blockItems, setBlockItems , setSelectedItems } = useGridContext();
   const id = gridItem?.id;
 
   const [gridSize, setGridSize] = useState({
@@ -30,7 +30,7 @@ export default function GridItem({ children, className, gridItem }) {
   const Widget = gridItem?.element;
 
   const checkCollision = (newRow, newCol, rowSpan, colSpan) => {
-    return gridItems.some((item) => {
+    return blockItems.some((item) => {
       if (item.id === id) return false;
       const isColOverlap =
         newCol < item.col + item.colSpan && newCol + colSpan > item.col;
@@ -112,8 +112,8 @@ export default function GridItem({ children, className, gridItem }) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setGridItems(
-        gridItems.map((item) =>
+      setBlockItems(
+        blockItems.map((item) =>
           item.id === id
             ? {
                 ...item,
