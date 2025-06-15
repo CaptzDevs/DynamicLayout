@@ -275,11 +275,18 @@ export const GridProvider = ({ children  }) => {
     setBlockItems((prevItems) => prevItems.map((item) => (item.id === id ? updatedItem : item)));
   };
 
-  const getBlockPropsValue = (gridItem ,  propName) => {
-    console.log(gridItem , propName,'dasdashfdjkifjd1')
-    const prop = gridItem?.dataProps?.props?.find(prop => prop.name === propName);
-    return prop?.value // return first item if exists
+  const getBlockPropsValue = (gridItem, propName) => {
+    if (Array.isArray(gridItem)) {
+      return gridItem.flatMap(item => {
+        const prop = item?.dataProps?.props?.find(p => p.name === propName);
+        return prop?.value ?? [];
+      });
+    } else {
+      const prop = gridItem?.dataProps?.props?.find(p => p.name === propName);
+      return prop?.value ?? null;
+    }
   };
+  
 
   return (
     <GridContext.Provider value={{ 
