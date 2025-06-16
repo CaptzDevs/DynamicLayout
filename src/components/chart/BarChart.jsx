@@ -39,14 +39,12 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
     const { dataSet , gridItems } = useGridContext()
     const { widgetId , widgetData , chartData } = useWidgetContext()
 
-   
   const propsData = widgetData?.dataProps?.props
   console.log('propsData',propsData)
   const getPropData = (propName) => {
     const prop = propsData.find(prop => prop.name === propName);
     return prop?.value // return first item if exists
   };
-  
 
   const xData = getPropData('x');
   const yData = getPropData('y');
@@ -120,6 +118,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
     config={chartConfig}
     className="aspect-auto min-h-[200px] h-full w-full"
   >
+
     <BarChart
     /*   layout='vertical' */
       accessibilityLayer
@@ -131,7 +130,6 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
     >
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
       <ReferenceLine y={0} stroke="#000" />
-
       {xData?.map((item) => (
         <XAxis
         key={item.colKey}
@@ -141,11 +139,15 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
         tickMargin={8}
         minTickGap={32}
         tickFormatter={(value) => {
-          const date = new Date(value)
-          return date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })
+          if(item.colValue.type === 'Date'){
+            const date = new Date(value)
+            return date.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })
+          }else{
+            return value
+          }
         }}
         />
       ))}

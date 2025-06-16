@@ -140,7 +140,7 @@ export const TabDataPage = () => {
                     onClick={()=>onClickCol( dataSetIndex, item.dataKey,key)}
                     >
                         <div className='flex items-center gap-2 '>
-                            <span>{ DataTypeIcons[value?.name] || 'null'}</span>  
+                            <span>{ DataTypeIcons[value?.type] || 'null'}</span>  
                             <span>{key}</span>
                         </div>
 

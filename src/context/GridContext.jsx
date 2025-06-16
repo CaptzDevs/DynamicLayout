@@ -242,7 +242,7 @@ export const GridProvider = ({ children  }) => {
       });
     
       const cols = Object.entries(keyTypes).map(([key, type]) => ({
-        [key]: { name: type?.name || 'Unknown' },
+        [key]: { type: type?.name || 'Unknown' },
         selected: false,
       }));
     
