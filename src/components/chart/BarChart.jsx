@@ -37,8 +37,7 @@ const chartProps = {
 export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
     const { dataSet , gridItems } = useGridContext()
-    const { widgetId , widgetData } = useWidgetContext()
-    const [chartData , setChartData] = React.useState([])
+    const { widgetId , widgetData , chartData } = useWidgetContext()
 
    
   const propsData = widgetData?.dataProps?.props
@@ -76,12 +75,12 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
   }, [widgetData]);
   
 
-    useEffect(() => {
+   /*  useEffect(() => {
       const source = dataSet.find((item) => item?.dataKey === dataSourceKey);
       if (source) {
         setChartData(source.data);
       }
-    }, [dataSet, dataSourceKey]);
+    }, [dataSet, dataSourceKey]); */
     
     
   
@@ -107,7 +106,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
       );
     }
 
-    if (chartData.length === 0) {
+    if (chartData?.length === 0) {
       return (
         <div className='h-full w-full flex items-center justify-center text-sm text-muted'>
           No chart data available
