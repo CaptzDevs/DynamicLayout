@@ -48,7 +48,8 @@ export const WidgetProvider = ({ children , widgetData }) => {
   
     for (const prop of propsData) {
       for (const col of prop.value || []) {
-        const colDataArray = dataSetMap.get(col.dataKey)?.map(item => item[col.colKey]) || [];
+        if (col.hidden) continue; // Skip hidden columns early
+        const colDataArray = dataSetMap.get(col.dataKey)?.map(item => item[col.colKey] ) || [];
         newDataSet.push({ [col.colKey]: colDataArray });
       }
     }

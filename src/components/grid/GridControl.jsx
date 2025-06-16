@@ -134,6 +134,7 @@ export const TabDataPage = () => {
                           dataKey: item.dataKey,
                           colKey: key,
                           colValue: value,
+                          hidden : value?.hidden ?? false
                         })
                       );
                     }}

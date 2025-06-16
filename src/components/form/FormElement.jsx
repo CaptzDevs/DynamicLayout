@@ -15,6 +15,7 @@ import {
 import { Button } from '../ui/button'
 import { useGridContext } from '@/context/GridContext'
 import { ColorPicker } from 'antd'
+import { Eye, EyeClosed } from 'lucide-react'
 
 export const InputForm = ({item}) => {
     const id = useId()
@@ -226,6 +227,42 @@ export const InputDropZone = ({
     updateSelectedItemProps(item.name, updated); // ✅ fixed
   };
 
+  const hideItem = (colKey , value)=>{
+    console.log(item, colKey , value,'dasigjhijiaga')
+    const updateColor = selectedItems.dataProps.props.map((selectProp) => {
+      if (selectProp.name === item.name && Array.isArray(selectProp?.value)) {
+        const updatedValue = selectProp.value.map((propVal) => {
+          if (propVal.colKey === colKey) {
+            return {
+              ...propVal,
+              hidden: !value, // <-- convert color here
+            };
+          }
+          return propVal;
+        });
+    
+        return {
+          ...selectProp,
+          value: updatedValue,
+        };
+      }
+    
+      return selectProp; // fallback for others
+    });
+    
+
+    const updateProps = {
+      ...selectedItems,
+      dataProps: {
+        ...selectedItems.dataProps,
+        props: updateColor,
+      },
+    };
+  
+    setSelectedItems(updateProps);
+    updateBlockItem(selectedItems.id, updateProps);
+  }
+
   return (
     <div
       className="w-full rounded-sm bg-neutral-800 p-2 flex flex-wrap gap-2 items-start min-h-[40px]"
@@ -247,12 +284,20 @@ export const InputDropZone = ({
           >
             <InputColor item={item} col={col} value={col.color}/>
             <span>{col.colKey}</span>
+            <div className='flex items-center justify-center'>
             <Button
               className="text-red-400 ml-1 text-[10px] hover:text-red-600 !bg-transparent"
+              onClick={() => hideItem(col.colKey , col.hidden)}
+            >
+              { col?.hidden ? <EyeClosed size={16}/> : <Eye size={16}/> } 
+            </Button>
+            <Button
+              className="text-red-400 text-[10px] hover:text-red-600 !bg-transparent"
               onClick={() => removeItem(index)}
             >
               ×
             </Button>
+            </div>
           </div>
         ))
       ) : (
