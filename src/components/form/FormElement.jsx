@@ -21,9 +21,20 @@ import useDebounceCallback from '@/hooks/useDebounceCallback'
 
 export const InputForm = ({propKey, item}) => {
 
-  const { selectedItems , setSelectedItems  , updateBlockItem} = useGridContext();
+  const { selectedItems, setSelectedItems, updateBlockItem } = useGridContext();
 
-
+  const getBlockDataValue = (gridItem, propKey) => {
+    if (Array.isArray(gridItem)) {
+      return gridItem.flatMap(item => {
+        const prop = item?.dataProps?.chartData?.find(p => p.key === propKey);
+        return prop?.value ?? [];
+      });
+    } else {
+      const prop = gridItem?.dataProps?.chartData?.find(p => p.key === propKey);
+      return prop?.value ?? null;
+    }
+  };
+  
   const updateProps = (propKey, subPropKey, value) => {
     const updatedPropArray = selectedItems.dataProps[propKey].map((prop) => {
       if (prop.key === subPropKey) {
@@ -43,10 +54,14 @@ export const InputForm = ({propKey, item}) => {
     setSelectedItems(updatedPropsObject);
     updateBlockItem(selectedItems.id, updatedPropsObject);
   };
-
-
-const handleUpdateData = useDebounceCallback(updateProps, 300);
-
+  
+  const handleUpdateData = useDebounceCallback(updateProps, 300);
+  const currentValueFromData = getBlockDataValue(selectedItems, item.key) ?? '';
+  const [inputVal, setInputVal] = useState(currentValueFromData);
+  
+  useEffect(() => {
+    setInputVal(currentValueFromData);
+  }, [currentValueFromData]);
   
     const id = useId()
     return (
@@ -59,9 +74,13 @@ const handleUpdateData = useDebounceCallback(updateProps, 300);
               id={id}
               className={cn(item.units && 'rounded-e-none', `w-full -me-px rounded-sm border-none  shadow-none focus-visible:z-10 !text-[16px]`)}
               placeholder={item.name}
-              defaultValue={item?.default ?? item.value}
+              defaultValue={inputVal ?? item?.default ?? item.value}
+              value={inputVal ?? item?.default ?? item.value}
               type="text"
-              onKeyUp={(e)=> handleUpdateData(propKey,item.key , e.target.value)}
+              onChange={(e) => {
+                setInputVal(e.target.value); // update immediately for controlled input
+                handleUpdateData(propKey, item.key, e.target.value); // debounced update to global state
+              }}
             />
   
         }

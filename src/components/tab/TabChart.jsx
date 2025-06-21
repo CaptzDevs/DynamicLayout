@@ -5,7 +5,7 @@ import { useGridContext } from '@/context/GridContext'
 
 export  function TabChart() {
   const { selectedItems } = useGridContext()
-
+  
   console.log(selectedItems, 'selectedItems');
   return (
     <div className='h-fit flex flex-col items-start justify-start gap-2   px-2 pb-10'>

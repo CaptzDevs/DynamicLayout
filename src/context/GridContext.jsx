@@ -203,6 +203,7 @@ const _Pannel = [
 
 const blockItemData = [
   /* { id: 1, row: 3, col: 3, rowSpan: 6, colSpan: 4 , element : <CardWidget/>}, */
+  { id: 1, row: 1, col: 1, rowSpan: 5, colSpan: 5  ,element : ChartWidget , dataProps : chartProps.barChart },
   { id: 2, row: 4, col: 4, rowSpan: 16, colSpan: 18  ,element : ChartWidget , dataProps : chartProps.barChart },
 ]
 
@@ -286,6 +287,8 @@ export const GridProvider = ({ children  }) => {
       return prop?.value ?? null;
     }
   };
+
+ 
   
 
   return (

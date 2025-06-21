@@ -144,7 +144,7 @@ export default function GridItem({ children, className, gridItem }) {
       }}
       ref={ref}
       className={cn(
-        'relative w-full h-full flex flex-col items-center justify-center gap-2 dark:bg-neutral-900 bg-white rounded-xl group transition-all overflow-hidden p-3' ,
+        'relative w-full h-full flex flex-col hover:border items-center justify-center gap-2 dark:bg-neutral-900 bg-white rounded-xl group transition-all overflow-hidden p-3' ,
         className
       )}
       style={gridProp}
@@ -153,14 +153,14 @@ export default function GridItem({ children, className, gridItem }) {
         {gridSize.row} × {gridSize.col} | row : {gridPosition.row} ,  col : {gridPosition.col}
       </div> */}
 
-      <div className='w-full flex items-center justify-between  border-b border-neutral-700 pb-2 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-75'> 
+     {/*  <div className='w-full flex items-center justify-between absolute top-0 left-0  border-b border-neutral-700  text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-75'> 
         <div>Chart {gridItem.colSpan} x {gridItem.rowSpan}</div>
         <div className='flex items-center gap-2 '> 
           <div className="opacity-50 hover:opacity-100 cursor-pointer"> <Ellipsis/> </div>  
           <div className="opacity-50 hover:opacity-100 cursor-pointer"> <X/> </div>  
         </div>
       </div>
-
+ */}
       <WidgetProvider widgetData={gridItem}>
         <Widget />
       </WidgetProvider>
