@@ -41,8 +41,8 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
   const propsData = widgetData?.dataProps?.props
   console.log('propsData',propsData)
-  const getPropData = (propName) => {
-    const prop = propsData.find(prop => prop.name === propName);
+  const getPropData = (propKey) => {
+    const prop = propsData.find(prop => prop.key === propKey);
     return prop?.value // return first item if exists
   };
 
@@ -51,7 +51,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
 
   //console.log(getPropData('x'),'dasdad')
 
-  const dataSourceKey = useMemo(() => {
+/*   const dataSourceKey = useMemo(() => {
     const flattenedKeys = (widgetData?.dataProps?.props ?? []).flatMap(item =>
       item?.value?.map(valueItem => valueItem.dataKey) ?? []
     );
@@ -70,7 +70,7 @@ export default function BarChartItem({  /* chartProps , chartStyle  */}) {
       }
     }
     return maxKey;
-  }, [widgetData]);
+  }, [widgetData]); */
   
 
    /*  useEffect(() => {

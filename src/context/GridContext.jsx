@@ -275,14 +275,14 @@ export const GridProvider = ({ children  }) => {
     setBlockItems((prevItems) => prevItems.map((item) => (item.id === id ? updatedItem : item)));
   };
 
-  const getBlockPropsValue = (gridItem, propName) => {
+  const getBlockPropsValue = (gridItem, propKey) => {
     if (Array.isArray(gridItem)) {
       return gridItem.flatMap(item => {
-        const prop = item?.dataProps?.props?.find(p => p.name === propName);
+        const prop = item?.dataProps?.props?.find(p => p.key === propKey);
         return prop?.value ?? [];
       });
     } else {
-      const prop = gridItem?.dataProps?.props?.find(p => p.name === propName);
+      const prop = gridItem?.dataProps?.props?.find(p => p.key === propKey);
       return prop?.value ?? null;
     }
   };

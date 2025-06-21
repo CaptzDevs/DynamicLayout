@@ -154,7 +154,7 @@ export default function GridItem({ children, className, gridItem }) {
       </div> */}
 
       <div className='w-full flex items-center justify-between  border-b border-neutral-700 pb-2 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-75'> 
-        <div>Chart </div>
+        <div>Chart {gridItem.colSpan} x {gridItem.rowSpan}</div>
         <div className='flex items-center gap-2 '> 
           <div className="opacity-50 hover:opacity-100 cursor-pointer"> <Ellipsis/> </div>  
           <div className="opacity-50 hover:opacity-100 cursor-pointer"> <X/> </div>  
