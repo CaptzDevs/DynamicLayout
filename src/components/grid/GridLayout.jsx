@@ -36,7 +36,7 @@ export default function GridLayout({children}) {
     <div
       ref={containerRef}
       onClick={handleClick}
-      className={cn(  "relative w-full h-full max-h-[800px]  dark:bg-neutral-900 grid grid-cols-24 grid-rows-24 rounded-md gap-1 transition-all duration-75 ", mainLayoutSize[pannelOpenedCount])}
+      className={cn(  "relative w-full h-full max-h-[800px]  dark:bg-neutral-900 grid grid-cols-24 grid-rows-24 rounded-md gap-1  ", mainLayoutSize[pannelOpenedCount])}
  /*      style={{
         backgroundImage: `
           linear-gradient(to right, rgba(100,100,100,0.2) 1px, transparent 1px),

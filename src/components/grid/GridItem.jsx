@@ -144,7 +144,7 @@ export default function GridItem({ children, className, gridItem }) {
       }}
       ref={ref}
       className={cn(
-        'relative w-full h-full flex flex-col hover:border items-center justify-center gap-2 dark:bg-neutral-900 bg-white rounded-xl group transition-all overflow-hidden p-3' ,
+        'relative w-full h-full flex flex-col hover:border items-center justify-center gap-2 dark:bg-neutral-900 bg-white rounded-xl group  overflow-hidden p-3' ,
         className
       )}
       style={gridProp}

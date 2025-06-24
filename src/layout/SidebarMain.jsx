@@ -199,7 +199,10 @@ export default function SidebarMain() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground 
+
+      
+              "
             >
               <div className="bg-white text-neutral-900 flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Rocket size={16}/>
