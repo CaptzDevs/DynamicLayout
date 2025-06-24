@@ -4,9 +4,17 @@ import { Outlet } from 'react-router'
 
 import Header from './Header';
 import Footer from './Footer';
+import { Sidebar, SidebarProvider } from '@/components/ui/sidebar';
+import SidebarMain from './SidebarMain';
 
 export default function Layout() {
   return (
+    <SidebarProvider   style={{
+      "--sidebar-width": "14rem",
+      "--sidebar-width-mobile": "15rem",
+      
+    }}>
+      <SidebarMain />
     <main className="flex flex-col items-center justify-start w-screen h-[100dvh] bg-natural-100 dark:bg-black/95 px-2 md:px-5">
     <Header />
   
@@ -16,5 +24,6 @@ export default function Layout() {
   
     {/* <Footer /> */}
   </main>
+    </SidebarProvider>
   )
 }

@@ -64,9 +64,7 @@ a {
   font-weight: 500;
   text-decoration: inherit;
 }
-a:hover {
-  color: #535bf2;
-}
+
 
 body {
   margin: 0;
@@ -75,7 +73,6 @@ body {
   overflow-x: hidden;
   width: 100%;
 
-  
 }
 
 main{
@@ -100,12 +97,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.sidebar-container .group[data-side="left"] * {
+  border: none !important;
 }
 
 .ant-color-picker-trigger{
